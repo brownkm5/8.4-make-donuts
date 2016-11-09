@@ -51,13 +51,13 @@ var RecipeForm = React.createClass({
   },
   handleSubmitRecipe: function(e){
     e.preventDefault();
-    console.log(this.state);
+    // console.log(this.state);
     this.props.handleSubmitRecipe(this.state);
   },
   render: function(){
     var recipe = this.props.recipe;
     var self = this;
-    
+
     var ingredientForm = recipe.get('ingredients').map(function(ingredient){
       return <IngredientForm key={ingredient.cid} ingredient={ingredient}/>
     });
@@ -125,10 +125,11 @@ var RecipeContainer = React.createClass({
   handleSubmitRecipe: function(recipeData){
     var recipe = this.state.recipe;
     recipe.set(recipeData);
-    console.log('recipeData', recipe);
+    // console.log('recipeData', recipe);
     recipe.save().then(function(){
-      console.log('worked');
+      // console.log('worked');
     });
+    this.props.router.navigate('recipe-list/', {trigger: true});
   },
   render: function(){
     return (

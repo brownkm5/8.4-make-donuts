@@ -20,7 +20,7 @@ var ListComponent = React.createClass({
     var self = this;
     var recipes = this.state.recipes;
 
-    console.log(recipes);
+    // console.log(recipes);
     var recipeList = recipes.map(function(recipeData){
       return (
         <li className='list-group-item' key={recipeData.objectId}>
@@ -39,6 +39,7 @@ var ListContainer = React.createClass({
   componentWillMount: function(){
     var self = this;
     var token = localStorage.getItem('token');
+
     if(!token){
       self.props.router.navigate('', {trigger: true});
     }
@@ -50,8 +51,12 @@ var ListContainer = React.createClass({
     });
   },
   handleCalculator:function(recipeData){
+    var servingSize = JSON.stringify(recipeData.serving);
     var recipeData = JSON.stringify(recipeData);
+
+    localStorage.setItem('serving', servingSize);
     localStorage.setItem('recipe', recipeData);
+
     this.props.router.navigate('recipe-calculator/', {trigger:true});
   },
   render: function(){

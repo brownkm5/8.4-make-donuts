@@ -11,9 +11,13 @@ var CalculatorComponent = React.createClass({
   getInitialState: function(){
     var newServing = '';
     var factor = 1;
+    var servingSize = JSON.parse(localStorage.getItem('serving'));
+    // var number = parseInt(servingSize);
+    // console.log(number);
     return {
       newServing: newServing,
-      factor: factor
+      factor: factor,
+      servingSize: servingSize
     }
   },
   handleSubmit: function(){
@@ -21,19 +25,10 @@ var CalculatorComponent = React.createClass({
     var serving = recipe.serving;
     var newServing = this.state.newServing;
 
-    // console.log('wty', recipe.ingredients);
-    //pretty sure this needs to go in handle input
-    //also need to set the state of the recipe serving coming in so that i can use
-    //that in handleInput to do the math there so it happens on change and not
-    //on submit of the button, unless i change it to calculate recipe button
-    var ingredients = recipe.ingredients;
-    var ingredientList = ingredients.map(function(ingredient){
-      // console.log(ingredient.quantity);
-    });
     var servingInt = parseInt(serving);
     var newServingInt = parseInt(newServing);
 
-    //this.setState({serving: servingInt, newServing: newServingInt});
+    //calculate the factor to multiply the ingredient qunatities by
     var answer = math(servingInt, newServingInt);
     this.setState({factor:answer});
     // console.log(answer);
@@ -41,7 +36,7 @@ var CalculatorComponent = React.createClass({
   handleInput: function(e){
     var newServing = e.target.value;
     this.setState({newServing: newServing});
-    // console.log(newServing);
+    this.setState({servingSize: newServing});
   },
   render: function(){
     var self = this;
@@ -55,16 +50,23 @@ var CalculatorComponent = React.createClass({
       var amount = adjustedQuantity.toFixed(2);
       return <li key={ingredient.name}>{amount} {ingredient.unit} of {ingredient.name}</li>
     });
+
+    //when there wasnt a value in the text box for servings it would render servings
+    //but still render 1 for the serving value in the sentence
+    //setting it to or 1 makes it so when there is no value it still says serving
+    var servingSize = this.state.servingSize || 1;
+
+    //updates the word servings on the recipe card depending on if the serving number is one
     var servingsWord = function(){
-      if (factor === 1) {
-        return 'serving'
+      if (servingSize != 1) {
+        return 'servings'
       }
       else {
-        return 'servings'
+        return 'serving'
       }
     }
     var word = servingsWord();
-    // console.log(servingsWord);
+    // console.log(servingSize);
     return (
       <div className="col-sm-7 col-sm-offset-2">
         <div className='jumbotron'>
@@ -76,8 +78,8 @@ var CalculatorComponent = React.createClass({
           </ul>
           <form onSubmit={self.handleSubmit} className='form-group'>
             <label htmlFor="update">Update serving size</label>
-            <input onChange={self.handleInput} type="text" className="form-control" id="serving"  placeholder="How many servings would you like to make?"/>
-            <button type="submit" className="btn btn-default">Update Recipe</button>
+            <input onChange={self.handleInput} type="text" className="form-control" id="serving"  placeholder="How many servings would you like to make?" value={this.state.servingSize}/>
+            <button type="submit" className="btn btn-default">Calculate Recipe</button>
           </form>
         </div>
       </div>
