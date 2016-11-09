@@ -57,7 +57,7 @@ var RecipeForm = React.createClass({
   render: function(){
     var recipe = this.props.recipe;
     var self = this;
-
+    
     var ingredientForm = recipe.get('ingredients').map(function(ingredient){
       return <IngredientForm key={ingredient.cid} ingredient={ingredient}/>
     });
