@@ -286,6 +286,17 @@ var ListComponent = React.createClass({displayName: "ListComponent",
      self.setState({recipes: data.results});
     }
   },
+
+  // didnt work, i think because when it pulls info down from the server it isnt
+  //a collection, maybe create a collection with the data.results when pulling down,
+  //and then use that for all the listing
+  // handleDeleteRecipe: function(recipe){
+  //   var recipes = this.state.recipes;
+  //   recipes.delete(recipe);
+  //   this.setState({recipes : recipes});
+  //
+  //  <button onClick={function(){self.handleDeleteRecipe(recipeData)}} className='btn btn-danger' type="button" name="button">Delete Recipe</button>
+  // },
   render: function(){
     var self = this;
     var recipes = this.state.recipes;
@@ -368,13 +379,13 @@ var IngredientForm = React.createClass({displayName: "IngredientForm",
     this.setState(newState);
 
   },
-
   render: function(){
     return (
       React.createElement("div", {className: "form-inline"}, 
         React.createElement("input", {onChange: this.handleInput, type: "text", className: "form-control", name: "name", id: "ingredient", value: this.state.ingredient, placeholder: "Ingredient"}), 
         React.createElement("input", {onChange: this.handleInput, type: "number", className: "form-control", name: "quantity", id: "quantity", value: this.state.quantity, placeholder: "Quantity"}), 
         React.createElement("input", {onChange: this.handleInput, type: "text", className: "form-control", name: "unit", id: "unit", value: this.state.unit, placeholder: "Unit"})
+
       )
     )
   }
@@ -405,7 +416,12 @@ var RecipeForm = React.createClass({displayName: "RecipeForm",
     var self = this;
 
     var ingredientForm = recipe.get('ingredients').map(function(ingredient){
-      return React.createElement(IngredientForm, {key: ingredient.cid, ingredient: ingredient})
+      return (
+        React.createElement("div", {key: ingredient.cid}, 
+          React.createElement(IngredientForm, {ingredient: ingredient}), 
+          React.createElement("button", {className: "btn btn-danger", onClick: function(){self.props.handleDelete(ingredient)}, type: "button", name: "button"}, "Delete Ingredient")
+        )
+      )
     });
     return (
      React.createElement("form", {onSubmit: self.handleSubmitRecipe, className: "col-sm-6"}, 
@@ -468,6 +484,14 @@ var RecipeContainer = React.createClass({displayName: "RecipeContainer",
     this.setState({recipe: recipe});
 
   },
+  handleDeleteIngredient: function(ingredient){
+    // e.preventDefault();
+    console.log(this.state.recipe);
+    ingredient.destroy();
+    var recipe = this.state.recipe;
+    this.setState({recipe: recipe});
+    console.log('recipe', this.state.recipe);
+  },
   handleSubmitRecipe: function(recipeData){
     var recipe = this.state.recipe;
     recipe.set(recipeData);
@@ -481,7 +505,7 @@ var RecipeContainer = React.createClass({displayName: "RecipeContainer",
     return (
       React.createElement(TemplateComponent, null, 
         React.createElement("div", null, 
-          React.createElement(RecipeForm, {recipe: this.state.recipe, addIngredient: this.addIngredient, handleSubmitRecipe: this.handleSubmitRecipe})
+          React.createElement(RecipeForm, {recipe: this.state.recipe, addIngredient: this.addIngredient, handleSubmitRecipe: this.handleSubmitRecipe, handleDelete: this.handleDeleteIngredient})
         )
       )
     )
