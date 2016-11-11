@@ -16,6 +16,17 @@ var ListComponent = React.createClass({
      self.setState({recipes: data.results});
     }
   },
+
+  // didnt work, i think because when it pulls info down from the server it isnt
+  //a collection, maybe create a collection with the data.results when pulling down,
+  //and then use that for all the listing
+  // handleDeleteRecipe: function(recipe){
+  //   var recipes = this.state.recipes;
+  //   recipes.delete(recipe);
+  //   this.setState({recipes : recipes});
+  //
+  //  <button onClick={function(){self.handleDeleteRecipe(recipeData)}} className='btn btn-danger' type="button" name="button">Delete Recipe</button>
+  // },
   render: function(){
     var self = this;
     var recipes = this.state.recipes;

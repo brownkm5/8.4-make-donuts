@@ -22,13 +22,13 @@ var IngredientForm = React.createClass({
     this.setState(newState);
 
   },
-
   render: function(){
     return (
       <div className="form-inline">
         <input onChange={this.handleInput} type="text" className="form-control" name='name' id="ingredient" value={this.state.ingredient} placeholder="Ingredient"/>
         <input onChange={this.handleInput} type="number" className="form-control" name='quantity' id="quantity" value={this.state.quantity} placeholder="Quantity"/>
         <input onChange={this.handleInput} type="text" className="form-control" name='unit' id="unit" value={this.state.unit} placeholder="Unit"/>
+
       </div>
     )
   }
@@ -59,7 +59,12 @@ var RecipeForm = React.createClass({
     var self = this;
 
     var ingredientForm = recipe.get('ingredients').map(function(ingredient){
-      return <IngredientForm key={ingredient.cid} ingredient={ingredient}/>
+      return (
+        <div key={ingredient.cid}>
+          <IngredientForm  ingredient={ingredient}/>
+          <button className='btn btn-danger' onClick={function(){self.props.handleDelete(ingredient)}} type="button" name="button">Delete Ingredient</button>
+        </div>
+      )
     });
     return (
      <form onSubmit={self.handleSubmitRecipe} className='col-sm-6'>
@@ -122,6 +127,14 @@ var RecipeContainer = React.createClass({
     this.setState({recipe: recipe});
 
   },
+  handleDeleteIngredient: function(ingredient){
+    // e.preventDefault();
+    console.log(this.state.recipe);
+    ingredient.destroy();
+    var recipe = this.state.recipe;
+    this.setState({recipe: recipe});
+    console.log('recipe', this.state.recipe);
+  },
   handleSubmitRecipe: function(recipeData){
     var recipe = this.state.recipe;
     recipe.set(recipeData);
@@ -135,7 +148,7 @@ var RecipeContainer = React.createClass({
     return (
       <TemplateComponent>
         <div>
-          <RecipeForm recipe={this.state.recipe} addIngredient={this.addIngredient} handleSubmitRecipe={this.handleSubmitRecipe}/>
+          <RecipeForm recipe={this.state.recipe} addIngredient={this.addIngredient} handleSubmitRecipe={this.handleSubmitRecipe} handleDelete={this.handleDeleteIngredient}/>
         </div>
       </TemplateComponent>
     )
